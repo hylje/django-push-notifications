@@ -8,6 +8,7 @@ from rest_framework.fields import IntegerField
 from push_notifications.models import APNSDevice, GCMDevice, WNSDevice
 from push_notifications.fields import hex_re
 from push_notifications.fields import UNSIGNED_64BIT_INT_MAX_VALUE
+from push_notifications.compat import _user_is_authenticated
 
 
 # Fields
@@ -126,12 +127,12 @@ class DeviceViewSetMixin(object):
 	lookup_field = "registration_id"
 
 	def perform_create(self, serializer):
-		if self.request.user.is_authenticated():
+		if _user_is_authenticated(self.request.user):
 			serializer.save(user=self.request.user)
 		return super(DeviceViewSetMixin, self).perform_create(serializer)
 
 	def perform_update(self, serializer):
-		if self.request.user.is_authenticated():
+		if _user_is_authenticated(self.request.user):
 			serializer.save(user=self.request.user)
 		return super(DeviceViewSetMixin, self).perform_update(serializer)
 
